@@ -1,18 +1,31 @@
 <template>
-    <div>
-        <h2>首页</h2>
+    <div id="home">
+        <nav-bar class="home-nav"><div slot="center" class="text-name">购物街</div></nav-bar>
     </div>
 </template>
 
 <script>
-export default {
-name:'Home'
-}
-components: {
 
+import NavBar from 'components/common/navbar/NavBar'
+
+export default {
+name:'Home',
+components:{
+    NavBar
 }
+}
+
 </script>
 
 <style>
+    .home-nav {
+        background-color: var(--color-tint);
+    }
 
+    .text-name {
+        /* font-weight: bold; */
+        font-size: 20px;
+        color: #fff;
+        font-weight: normal;
+    }
 </style>
