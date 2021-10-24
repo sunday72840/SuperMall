@@ -5,28 +5,26 @@
         <home-recommend-view :recommends="recommends"/>
         <feature-view></feature-view>
 
-        <tab-control :titles="['流行','新款','精选']"></tab-control>
+        <tab-control class="tab-control"  :titles="['流行','新款','精选']"></tab-control>
         <ul>
             <li>列表1</li>
             <li>列表2</li>
             <li>列表3</li>
-            <li>列表4</li>
-            <li>列表5</li>
-            <li>列表6</li>
-            <li>列表7</li>
-            <li>列表8</li>
-            <li>列表9</li>
-            <li>列表10</li>
-            <li>列表11</li>
-            <li>列表12</li>
-            <li>列表13</li>
-            <li>列表14</li>
-            <li>列表15</li>
-            <li>列表16</li>
-            <li>列表17</li>
-            <li>列表18</li>
-            <li>列表19</li>
-            <li>列表20</li>
+            <li>列表3</li>
+            <li>列表3</li>
+            <li>列表3</li>
+            <li>列表3</li>
+            <li>列表3</li>
+            <li>列表3</li>
+            <li>列表3</li>
+            <li>列表3</li>
+            <li>列表3</li>
+            <li>列表3</li>
+            <li>列表3</li>
+            <li>列表3</li>
+            <li>列表3</li>
+            <li>列表3</li>
+            <li>列表3</li>
         </ul>
     </div>
 </template>
@@ -41,7 +39,8 @@ import FeatureView from './childComps/FeatureView.vue'
 import NavBar from 'components/common/navbar/NavBar'
 import TabControl from 'components/content/tabControl/tabControl'
 
-import {getHomeMultidata} from 'network/home.js'
+import {getHomeMultidata,getHomeGoods} from 'network/home.js'
+
 
 
 export default {
@@ -51,7 +50,8 @@ components:{
     HomeSwiper,
     HomeRecommendView,
     FeatureView,
-    TabControl
+    TabControl,
+    getHomeGoods
     
 },
 
@@ -59,17 +59,46 @@ components:{
 data (){
     return {
         banners:[],
-        recommends:[]
+        recommends:[],
+        // 数据模型,请求首页分类数据
+        goods:{
+            'pop':{page:0,list:[]},
+            'new':{page:0,list:[]},
+            'sell':{page:0,list:[]},
+        }
     }
 },
 // 当创建生命周期函数时，去服务器请求数据
 created () {
     //1.请求多个数据
-    getHomeMultidata().then( res => {
-        this.banners = res.data.data.banner.list;
-        this.recommends = res.data.data.recommend.list;
-    })
-}
+    this.getHomeMultidata()
+    // 2.请求首页商品数据,
+    this.getHomeGoods('pop')
+
+    this.getHomeGoods('new')
+
+    this.getHomeGoods('sell')
+    
+    },    
+    // 用计算函数methods方法封装成请求数据函数
+    methods:{
+        getHomeMultidata (){                    
+            getHomeMultidata().then( res => {
+                this.banners = res.data.data.banner.list;
+                this.recommends = res.data.data.recommend.list;
+            })
+        },
+        // 传入一个type参数动态获取数据,定义一个page页码的变量，这样可以请求第二页第三页这样请求
+        // 这里定义的type指的是 ‘pop’ ‘new’ ‘sell’
+        getHomeGoods(type){            
+            const page = this.goods[type].page + 1
+            getHomeGoods(type,page).then(res => {
+                // 把数据保存到上面的data里 
+                this.goods[type].list.push(...res.data.data.list)
+                this.goods[type].page += 1
+            })
+            }
+        }
 }
 
 </script>
@@ -94,5 +123,11 @@ created () {
         font-size: 20px;
         color: #fff;
         font-weight: normal;
+    }
+
+    .tab-control {
+        position: sticky;
+        top:44px;
+        background-color: #fff;
     }
 </style>
